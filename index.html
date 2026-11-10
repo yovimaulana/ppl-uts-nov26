@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="id"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Belajar UTS IF5121 PPL</title>
+<style>
+:root{--bg:#f6f7fb;--card:#fff;--tx:#1b1f2a;--mu:#5d6475;--ac:#4f46e5;--ok:#15803d;--okb:#dcfce7;--no:#b91c1c;--nob:#fee2e2;--bd:#e2e5ee;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12141c;--card:#1c2030;--tx:#e8eaf2;--mu:#98a0b5;--ac:#8b86ff;--ok:#4ade80;--okb:#12301f;--no:#f87171;--nob:#3a1717;--bd:#2c3248;color-scheme:dark}}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif}
+.w{max-width:820px;margin:0 auto;padding:14px}
+h1{font-size:1.3rem;margin:4px 0}h2{font-size:1.1rem;margin:0 0 6px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.tm{font:600 1.1rem ui-monospace,monospace;color:var(--ac)}
+nav{display:flex;gap:6px;overflow-x:auto;margin:10px 0;position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);padding:6px 0;z-index:5}
+button{font:inherit;cursor:pointer;border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:10px;padding:8px 14px}
+nav button{white-space:nowrap}nav button.on,button.p{background:var(--ac);color:#fff;border-color:var(--ac)}
+.c{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:14px;margin:10px 0}
+.mu{color:var(--mu);font-size:.9rem}
+details{background:var(--card);border:1px solid var(--bd);border-radius:12px;margin:8px 0;padding:10px 14px}
+summary{cursor:pointer;font-weight:600}
+ul{margin:8px 0;padding-left:20px}li{margin:3px 0}
+.o{display:block;width:100%;text-align:left;margin:6px 0}
+.o.ok{background:var(--okb);border-color:var(--ok)}.o.no{background:var(--nob);border-color:var(--no)}
+.ex{margin-top:8px;padding:8px 10px;border-left:3px solid var(--ac);background:var(--bg);border-radius:6px;font-size:.93rem}
+.sc{position:sticky;bottom:0;background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:10px 14px;margin-top:10px;display:flex;justify-content:space-between;align-items:center}
+.pl label{display:flex;gap:8px;align-items:flex-start;margin:6px 0}
+code{background:var(--bg);padding:1px 5px;border-radius:5px}
+.warn{border-left:4px solid var(--no)}
+</style></head><body><div class="w">
+<div class="top"><div><h1>📘 Belajar UTS IF5121 – Perancangan Perangkat Lunak</h1><div class="mu">Materi Pertemuan 1–7</div></div>
+<div><span class="tm" id="tm">90:00</span> <button id="tb" class="p">Mulai timer</button></div></div>
+<nav id="nav"></nav><div id="v"></div></div>
+<script>
+const S=[
+["P1 · Pendahuluan & Penggerak Desain",[
+"<b>Kebutuhan</b> = tujuan, batasan, kriteria sukses. <b>Desain</b> = struktur, tanggung jawab, interaksi. <b>Implementasi</b> = kode &amp; konfigurasi. Pengujian/operasi memberi umpan balik ke desain.",
+"<b>4 penggerak desain</b>: fungsi penting, atribut kualitas, kendala, konteks (pemangku kepentingan, sistem eksternal, lingkungan).",
+"<b>Abstraksi</b>: tampilkan konsep penting pada tingkat tertentu (kontrak tanpa detail penyimpanan). <b>Modularitas</b>: unit bertanggung jawab jelas; banyak modul ≠ kualitas baik.",
+"<b>Separation of concerns</b>: aturan reservasi, tampilan, pesan punya alasan berubah berbeda. Keamanan &amp; logging = <i>cross-cutting</i>.",
+"<b>Information hiding</b> = sembunyikan keputusan yang mungkin berubah. <b>Enkapsulasi</b> = kelompokkan data+operasi &amp; kendalikan akses.",
+"<b>Kohesi</b> = keterkaitan di <u>dalam</u> satu modul (tinggi = baik). <b>Coupling</b> = ketergantungan <u>antar</u> modul. Jumlah fungsi saja tak cukup menyimpulkan coupling.",
+"Tidak ada satu rancangan unggul untuk semua konteks. Contoh: cache ↑ kecepatan baca tapi ↑ isu konsistensi; pisah layanan ↑ koordinasi &amp; operasi.",
+"Kasus klinik: konfirmasi bisa gagal → <b>pisahkan status reservasi dan status kirim</b> (butuh pencatatan gagal + kirim ulang). Keterlacakan: kebutuhan → keputusan → pertanyaan evaluasi.",
+"Penilaian: kuis 10%, tugas 10%, proyek 40%, UTS 20%, UAS 20%. Arsitektur P1 (pert. 5), P2 (10), P3 (14)."]],
+["P2 · Kebutuhan & Skenario Kualitas",[
+"Kategori: <b>batasan wajib</b> (SSO kampus wajib), <b>asumsi</b> (lonjakan 200 user → validasi data), <b>preferensi</b> (tim bisa Java → bandingkan), <b>keputusan desain</b> (cache → evaluasi manfaat &amp; risiko).",
+"<b>Kebutuhan signifikan</b>: dampak luas, risiko tinggi, sulit dipenuhi, biaya perubahan tinggi.",
+"<b>6 unsur skenario kualitas</b>: sumber stimulus, stimulus, lingkungan, artefak, respons, ukuran respons.",
+"Q-01 Kinerja: 200 user, 20 req/dtk, 15 mnt → <b>p95 ≤ 2 dtk, error teknis &lt; 1%</b>. Q-02 Pemulihan: <b>pulih ≤ 60 dtk, kehilangan transaksi terkonfirmasi = 0</b>. Q-03 Otorisasi: batal reservasi orang lain → ditolak + audit. Q-04 Modifikasi: aturan durasi baru <b>≤ 1 hari kerja (≤ 8 jam), ≤ 2 modul</b>. Q-05 Usability: <b>≥ 8/10 peserta, ≤ 3 menit</b>.",
+"Ukuran harus tepat: “cepat” → batas latensi+profil beban; “aman” → ancaman+aturan akses+kasus uji; “mudah diubah” → jenis perubahan+batas usaha. Angka target butuh alasan bisnis/asumsi.",
+"Konflik kualitas: audit sinkron ↔ latensi; redundansi ↔ biaya operasi. Prioritas = kepentingan bisnis × kesulitan teknis.",
+"Keterlacakan: Kebutuhan (FR) → Skenario (Q) → Isu desain → Bukti (uji beban, uji akses negatif, dst)."]],
+["P3 · Alternatif Arsitektur & Trade-off",[
+"Penggerak mendahului pilihan teknologi. Keputusan arsitektur harus dapat ditelusuri ke penggerak.",
+"<b>Layered</b> (presentasi, aplikasi, domain, infrastruktur) mengatur <i>dependensi</i>; <b>modular monolith</b> = satu unit deployment; <b>layanan</b> = deployment terpisah via jaringan. Dimensi berbeda → bisa digabung (monolith/layanan punya lapisan internal).",
+"Layered: + pemisahan &amp; uji per lapisan; − perubahan lintas lapisan, lapisan sekadar meneruskan panggilan.",
+"Modular monolith: transaksi lokal, operasi awal sederhana; perubahan satu modul bisa menuntut deploy seluruh aplikasi. Layanan: isolasi deploy &amp; penskalaan fleksibel; tapi latensi jaringan, kegagalan parsial, transaksi lintas batas, perlu observability &amp; otomasi.",
+"Taktik berbiaya: cache (perlu invalidasi), replika (ketersediaan), antarmuka stabil (batasi rambatan perubahan), otorisasi+audit.",
+"Matriks berbobot: Total = Σ(bobot desimal × nilai). Skor itu hipotesis, bukan benchmark. <b>Koreksi:</b> total A di slide tertulis 4,10, padahal hitungan benar = <b>4,05</b>; B = 3,00.",
+"A (monolith) jadi baseline: tim kecil + tenggat singkat. Constraint unik/transaksi atomik melindungi slot; <b>outbox + worker</b> memisahkan kegagalan notifikasi; ekstraksi layanan perlu pemicu terukur."]],
+["P4 · Notasi Arsitektur & Keputusan Desain",[
+"<b>Model konteks</b>: sistem sebagai satu kesatuan + aktor + sistem eksternal (SSO, penyedia pengingat); hubungan diberi label tujuan pertukaran.",
+"<b>Komponen UML</b>: «component»; <b>provided interface</b> = layanan ditawarkan; <b>required interface</b> = layanan dibutuhkan; <b>assembly connector</b> menghubungkan keduanya.",
+"<b>Dependency</b>: garis putus-putus, panah terbuka, dari client ke supplier. <b>Realization</b>: garis putus-putus, segitiga kosong ke abstraksi. Dependensi kode ≠ aliran data runtime.",
+"<b>Deployment</b>: node, device (perangkat fisik), execution environment, artifact (mis. lab-app.jar), communication path. Containment = penempatan artefak.",
+"Pengembalian offline: browser simpan operasi dengan <b>operationId unik</b> → kirim saat online → server validasi izin, versi data, duplikasi → konflik masuk antrean review petugas.",
+"Konsistensi antar-view: nama, batas sistem, asumsi offline sama; aktor di konteks punya titik interaksi di komponen; komponen terpetakan ke artefak.",
+"<b>ADR</b> = konteks, pilihan, alasan, alternatif ditolak + konsekuensi; status usulan/diterima/digantikan; ditinjau saat penggerak berubah. ADR-01 persetujuan harus daring (alat tak boleh 2 peminjam aktif; konsekuensi persetujuan tertunda saat jaringan gagal). ADR-02 modular monolith. ADR-03 pengingat asinkron dengan outbox."]],
+["P5 · Strategi Desain & Baseline",[
+"<b>Top-down</b>: mulai dari tujuan/skenario/batas → dekomposisi. <b>Bottom-up</b>: mulai dari aset/kemampuan tersedia → komposisi. Digabung: top-down menetapkan invariant, bottom-up menguji (transaksi, constraint).",
+"Dekomposisi: Inventaris (identitas &amp; kondisi alat), Peminjaman (siklus ajuan→kembali, jaga pinjaman aktif), Notifikasi (gagal kirim tidak batalkan transaksi), Pelaporan (tidak ubah status operasional).",
+"<b>Iteratif</b> = memperbaiki (revisi rancangan setelah uji). <b>Incremental</b> = menambah cakupan (rilis berikutnya tambah fitur).",
+"Bukti harus sesuai pertanyaan: pemahaman UI → uji tugas prototipe; dua persetujuan sukses bersama? → uji konkurensi (spike); p95 ≤ 3 dtk → <b>uji beban</b> (storyboard tak cukup); perubahan aturan → simulasi + review dampak.",
+"Agile: kolaborasi pengguna, perangkat lunak berjalan, dokumentasi tetap bernilai, desain baik mendukung adaptasi. <b>Design Sprint 5 hari</b>: Map, Sketch, Decide, Prototype, Test. Prototipe UI harus dilengkapi eksperimen teknis untuk risiko arsitektur.",
+"<b>Baseline</b> = acuan berversi; risiko terbuka punya pemilik &amp; rencana validasi; temuan baru → perubahan terkontrol. Paket P1: ≥ 4 skenario kualitas, ≥ 2 alternatif, ≥ 3 keputusan, matriks keterlacakan, risiko, kontribusi anggota."]],
+["P6 · Rancangan Rinci & Kontrak",[
+"Cohesion: kelas LoanManager yang setujui pinjaman + hitung gaji + buat PDF = kohesi rendah. Coupling naik bila modul baca tabel/detail internal modul lain; tanda: perubahan tersebar &amp; dependensi melingkar. Tujuan: dependensi perlu &amp; terkelola, bukan nol.",
+"<b>SOLID</b>: SRP (alasan perubahan berbeda tercampur?), OCP (variasi lewat kontrak stabil, mis. ApprovalPolicy), LSP (pengganti tak perkuat prasyarat / lemahkan jaminan), ISP (klien tak bergantung operasi yang tak dibutuhkan), DIP (kebijakan domain bergantung pada abstraksi: ApprovalService → «interface» LoanRepository ← SqlLoanRepository).",
+"Abstraksi hanya bila variasi relevan, bukan untuk setiap if.",
+"<b>Kontrak</b>: signature, prasyarat (kewajiban sebelum panggilan), pascasyarat (jaminan hasil), invariant (kondisi stabil). Batas sistem tetap memvalidasi input tak tepercaya. Alat tak tersedia = hasil bisnis sah, bukan crash.",
+"approveLoan(requestId, actorId, operationId): sukses LoanApproved; gagal NotFound, Forbidden, Unavailable, InvalidState; retry intent sama → hasil tersimpan setara; gagal bisnis → tanpa perubahan parsial. Invariant: ≤ 1 pinjaman aktif per alat.",
+"Konkurensi: cek-lalu-update saja tidak cukup; perlu transaksi/constraint/penguncian + uji skenario serentak.",
+"Diagram kelas: <code>−</code> private, <code>+</code> public; LoanRequest 1 — 0..1 Loan (satu request menghasilkan paling banyak satu loan). Pengujian diturunkan dari kontrak (retry operationId sama → efek tetap satu; ID sama payload beda → tolak; gagal sebelum commit → rollback)."]],
+["P7 · Kolaborasi Komponen & Konsistensi Perilaku",[
+"Kontrak (syarat &amp; hasil), diagram sekuens (siapa memanggil siapa, urutan), model status (perubahan sah), batas transaksi (apa yang harus berhasil bersama).",
+"Peserta: ApprovalController (terima/respons), ApprovalService (koordinasi), Loan (aturan status), InventoryService (kelayakan), LoanRepository (data).",
+"Cabang alternatif: tak ditemukan → gagal; tak berwenang → tolak; alat tak layak → tetap <i>Diajukan</i>; sudah dialokasikan → konflik.",
+"<b>Status</b>: Diajukan→Disetujui (setuju) / Ditolak (tolak) / Dibatalkan (batal pemohon); Disetujui→Dipinjam (penyerahan) / Dibatalkan (+lepas alokasi); Dipinjam→Dikembalikan. Disetujui &amp; Dipinjam = pinjaman aktif.",
+"Kegagalan: penyimpanan gagal → batalkan (rollback); <b>notifikasi gagal setelah commit → pertahankan persetujuan &amp; jadwalkan ulang</b>. Transaksi: status+alokasi dalam satu transaksi; bila lintas layanan perlu koordinasi &amp; pemulihan.",
+"<b>Idempotensi</b>: pengulangan menghasilkan efek akhir sama; requestId sama → kembalikan hasil tercatat. <b>Dua persetujuan bersamaan</b>: pembaruan atomik/penguncian/constraint DB; yang kalah dapat konflik.",
+"Review: pesan sesuai tanggung jawab penerima? kegagalan punya keadaan akhir? transisi penuhi kontrak? retry tak menambah efek? permintaan bersamaan tak langgar invariant?"]]];
+// [pertanyaan, [opsi], idxBenar, penjelasan]
+const Q=[
+["“Komponen Reservasi meminta validasi pada komponen Jadwal” termasuk…",["Kebutuhan fungsional","Keputusan desain","Implementasi","Asumsi"],1,"Itu keputusan struktur/interaksi (desain), bukan kebutuhan pengguna atau kode."],
+["Empat penggerak desain adalah…",["Fungsi penting, atribut kualitas, kendala, konteks","Biaya, waktu, tim, bahasa","Kode, data, UI, tes","Aktor, use case, kelas, objek"],0,"Slide P1: fungsi penting, atribut kualitas, kendala, konteks."],
+["Information hiding paling tepat berarti…",["Menyembunyikan seluruh kode dari tim lain","Menyembunyikan keputusan yang mungkin berubah","Menjadikan semua atribut private","Mengenkripsi data"],1,"Fokus pada keputusan yang rawan berubah; akses lewat kontrak."],
+["Kohesi berbeda dengan coupling karena kohesi menilai…",["Ketergantungan antar modul","Keterkaitan tanggung jawab di dalam satu modul","Jumlah modul","Kecepatan eksekusi"],1,"Kohesi = dalam modul; coupling = antar modul."],
+["Mana yang termasuk BATASAN WAJIB?",["Tim lebih familiar dengan Java","Lonjakan maksimum 200 pengguna","Wajib memakai layanan identitas kampus","Usulan cache daftar fasilitas"],2,"Java = preferensi, 200 = asumsi, cache = keputusan desain."],
+["Mana yang BUKAN unsur skenario kualitas?",["Lingkungan","Artefak","Ukuran respons","Kriteria SOLID"],3,"Enam unsur: sumber stimulus, stimulus, lingkungan, artefak, respons, ukuran respons."],
+["Mengapa “sistem harus cepat” belum cukup sebagai kebutuhan?",["Terlalu singkat","Tidak ada batas latensi, profil beban, dan cara ukur","Cepat bukan atribut kualitas","Harus ditulis bahasa Inggris"],1,"Skenario butuh ukuran yang dapat diperiksa."],
+["Target Q-02 (pemulihan layanan) pada materi adalah…",["p95 ≤ 2 detik","Pulih ≤ 60 detik dan kehilangan transaksi terkonfirmasi = 0","≥ 8 dari 10 peserta berhasil","≤ 2 modul berubah"],1,"Q-01 kinerja, Q-02 pemulihan, Q-04 modifikasi, Q-05 usability."],
+["Contoh konflik kualitas pada materi P2 adalah…",["Audit sinkron menambah latensi pemesanan","Cache mempercepat tampilan","Layered memudahkan uji","SSO mempermudah login"],0,"Keamanan/audit sinkron ↔ kinerja; juga redundansi ↔ biaya."],
+["Manakah ciri kebutuhan signifikan bagi arsitektur?",["Mudah dibalik kapan saja","Dampak luas atau biaya perubahan tinggi","Hanya menyangkut UI","Preferensi anggota tim"],1,"Dampak luas, risiko tinggi, sulit dipenuhi, biaya perubahan tinggi."],
+["Total berbobot alternatif A pada matriks (0,30×5 + 0,25×5 + 0,20×4 + 0,15×2 + 0,10×2) adalah…",["4,10","4,05","3,00","4,50"],1,"1,5+1,25+0,8+0,3+0,2 = 4,05 (slide menulis 4,10, hitungan benar 4,05)."],
+["Keunggulan utama modular monolith untuk kasus klinik adalah…",["Penskalaan per layanan","Transaksi lokal & operasi awal lebih sederhana","Isolasi deployment penuh","Bebas dependensi"],1,"Tim kecil, tenggat pendek, konsistensi slot via transaksi lokal."],
+["Konsekuensi memisahkan menjadi layanan adalah…",["Tidak ada latensi","Latensi jaringan dan kegagalan parsial","Transaksi otomatis lebih mudah","Tak perlu observability"],1,"Plus kebutuhan otomasi deploy dan pengelolaan data."],
+["Hubungan layered dan layanan yang benar:",["Saling meniadakan","Dimensi berbeda; keduanya bisa dipadukan","Layered pasti monolith","Layanan tak boleh berlapis"],1,"Layered mengatur dependensi, layanan memisahkan deployment."],
+["Notasi UML dependency adalah…",["Garis putus-putus, panah terbuka, client → supplier","Garis penuh, segitiga kosong","Garis penuh, belah ketupat","Garis putus-putus, segitiga kosong"],0,"Segitiga kosong + putus-putus = realization."],
+["Required interface menyatakan…",["Layanan yang ditawarkan komponen","Layanan yang dibutuhkan komponen","Artefak deployment","Jalur komunikasi"],1,"Provided = ditawarkan; required = dibutuhkan."],
+["Alasan ADR-01 (persetujuan harus daring) adalah…",["Browser tak mendukung offline","Alat tidak boleh punya dua peminjam aktif","SSO mewajibkannya","Biaya lebih murah"],1,"Konsistensi lebih mudah, tapi persetujuan tertunda saat jaringan gagal."],
+["Perbedaan iteratif dan incremental:",["Sama saja","Iteratif memperbaiki; incremental menambah cakupan","Iteratif menambah fitur; incremental memperbaiki","Keduanya hanya untuk UI"],1,"Contoh: revisi transaksi (iteratif) vs rilis offline (incremental)."],
+["Bukti paling sesuai untuk “p95 pencarian ≤ 3 detik”:",["Storyboard","Uji beban dengan workload jelas","Review dokumen","Uji tugas pengguna"],1,"Storyboard tidak cukup membuktikan kinerja."],
+["Urutan Design Sprint:",["Sketch, Map, Test, Decide, Prototype","Map, Sketch, Decide, Prototype, Test","Decide, Map, Sketch, Test, Prototype","Prototype, Test, Map, Sketch, Decide"],1,"Hari 1–5: Map, Sketch, Decide, Prototype, Test."],
+["ApprovalService → «interface» LoanRepository ← SqlLoanRepository adalah penerapan…",["SRP","OCP","DIP","ISP"],2,"Kebijakan domain bergantung pada abstraksi, bukan detail SQL."],
+["Sebuah subclass menolak input yang diterima parent-nya. Prinsip yang dilanggar:",["LSP","ISP","SRP","DIP"],0,"LSP: pengganti tak boleh memperkuat prasyarat atau melemahkan jaminan."],
+["Bila approveLoan gagal secara bisnis (Unavailable), pascasyarat yang benar:",["Perubahan sebagian disimpan","Tidak ada perubahan parsial","Notifikasi sukses dikirim","Sistem crash"],1,"Gagal bisnis = hasil sah tanpa perubahan parsial."],
+["Dua petugas menyetujui alat yang sama bersamaan. Mekanisme yang tepat:",["Cek status lalu update biasa","Pembaruan atomik/constraint/penguncian","Mengabaikan konflik","Kirim ulang notifikasi"],1,"Pemeriksaan sebelum update saja tak menjaga invariant."],
+["Idempotensi berarti…",["Operasi selalu cepat","Pengulangan permintaan menghasilkan efek akhir yang sama","Operasi tak pernah gagal","Data dienkripsi"],1,"requestId yang sama mengembalikan hasil yang sudah tercatat."],
+["Notifikasi gagal SETELAH commit persetujuan. Respons yang benar:",["Rollback persetujuan","Pertahankan persetujuan, jadwalkan ulang notifikasi","Hapus pinjaman","Abaikan selamanya"],1,"Gagal kirim tidak membatalkan transaksi bisnis (outbox/retry)."],
+["Pinjaman berstatus Disetujui lalu alat diserahkan. Status berikutnya:",["Diajukan","Dipinjam","Dikembalikan","Ditolak"],1,"Disetujui —penyerahan→ Dipinjam; —pembatalan+lepas alokasi→ Dibatalkan."]];
+const E=[
+["Bedakan kebutuhan, keputusan desain, dan implementasi dengan contoh reservasi klinik.","<b>Kebutuhan</b>: pasien dapat memilih jadwal dokter yang tersedia (tujuan &amp; kriteria). <b>Keputusan desain</b>: Reservasi menggabungkan validasi dan alokasi slot dalam transaksi / meminta validasi ke komponen Jadwal (struktur &amp; interaksi). <b>Implementasi</b>: transaksi &amp; constraint basis data merealisasikan aturan slot. Umpan balik pengujian/operasi dapat merevisi desain; setiap keputusan harus bisa ditelusuri ke kebutuhan."],
+["Jelaskan enam unsur skenario kualitas dan buat satu contoh skenario kinerja terukur.","Unsur: sumber stimulus, stimulus, lingkungan, artefak, respons, ukuran respons. Contoh: mahasiswa (sumber) mengirim permintaan pemesanan (stimulus) pada 200 pengguna virtual, 20 req/dtk selama 15 menit (lingkungan); operasi pemesanan API masuk→respons keluar (artefak); sistem memberi konfirmasi atau penolakan bisnis valid (respons); p95 ≤ 2 dtk, error teknis &lt; 1% (ukuran). Bukti: uji beban + log latensi."],
+["Bandingkan modular monolith dan arsitektur layanan untuk sistem dengan tim kecil dan tenggat singkat. Mana yang dipilih dan kapan berubah?","Monolith: transaksi lokal, konsistensi slot mudah, operasi sederhana, rilis cepat; risiko deploy menyeluruh, batas modul perlu aturan dependensi. Layanan: isolasi deploy &amp; penskalaan terpisah; biaya latensi, kegagalan parsial, transaksi lintas batas, observability. Dengan tim kecil/tenggat singkat pilih modular monolith (baseline) + outbox/worker untuk notifikasi; ekstraksi layanan bila ada pemicu terukur (mis. kebutuhan skala berbeda). Matriks berbobot hanyalah hipotesis, periksa kebutuhan wajib dahulu."],
+["Apa itu ADR? Tulis contoh ADR persetujuan peminjaman alat.","ADR menyimpan konteks, keputusan, alternatif (termasuk yang ditolak), dan konsekuensi; status usulan/diterima/digantikan; ditinjau saat penggerak/bukti berubah. Contoh ADR-01: <i>Konteks</i> koneksi lab terputus tetapi alat tak boleh punya dua peminjam aktif. <i>Keputusan</i> server pusat memvalidasi setiap persetujuan; pengembalian boleh dicatat offline. <i>Alternatif</i> persetujuan offline + rekonsiliasi ditolak. <i>Konsekuensi</i> konsistensi terjaga, persetujuan tertunda saat jaringan gagal; sertakan risiko, mitigasi, rencana validasi."],
+["Kritik kelas TaskManager (submit, uploadToCloud, sendEmail, exportGradeReport, updateDeadline) dan usulkan perbaikan dengan SOLID.","Masalah: kohesi rendah (submit, email, laporan, tenggat bercampur); coupling tinggi (baca tabel langsung, panggil SDK cloud, aturan tenggat tertanam) → ganti penyedia cloud/email atau aturan tenggat memaksa ubah kelas yang sama. Perbaikan: pisahkan komponen Pengumpulan Tugas (versi, tenggat, bukti, retry) dan Penyimpanan Berkas; SRP untuk memisah alasan berubah; DIP lewat interface FileStorage/Repository; notifikasi di luar transaksi submit. Biaya: lebih banyak antarmuka/kelas, abstraksi hanya untuk variasi yang relevan."],
+["Reservasi loker: dua mahasiswa memesan loker sama bersamaan, retry karena respons hilang, dan notifikasi gagal. Bagaimana rancangan menanganinya?","Invariant: satu loker ≤ 1 reservasi aktif; satu mahasiswa ≤ 1 reservasi aktif. <b>Bersamaan</b>: alokasi atomik via transaksi + constraint unik/penguncian; yang kalah menerima konflik. <b>Retry</b>: operationId/requestId unik → idempotensi, kembalikan reservasi yang sama. <b>Notifikasi gagal</b>: reservasi tetap sah setelah commit; catat pengiriman (outbox), coba ulang, mahasiswa dapat mengambil kode akses; kode berlaku setelah reservasi berhasil. Status: Diajukan→Aktif→Selesai/Dibatalkan, setiap transisi menjaga kedua invariant. Perubahan status+alokasi dalam satu transaksi."]];
+const P=["Menit 0–25: baca tab <b>Ringkasan</b> P1–P3 (konsep, 6 unsur skenario, trade-off, hitungan matriks).","Menit 25–45: Ringkasan P4–P5 (notasi UML, ADR, top-down/bottom-up, iteratif vs incremental).","Menit 45–60: Ringkasan P6–P7 (SOLID, kontrak, status, idempotensi, konkurensi).","Menit 60–75: kerjakan <b>Kuis</b> 26 soal; catat yang salah, baca penjelasannya.","Menit 75–85: latih <b>Esai</b>: jawab dulu di kertas, baru buka kunci.","Menit 85–90: baca ulang bagian yang salah &amp; tarik napas. Jangan belajar materi baru."];
+const v=document.getElementById("v"),nav=document.getElementById("nav");
+const T=[["🗓 Rencana",()=>{v.innerHTML='<div class="c pl"><h2>Rencana 90 menit</h2>'+P.map((p,i)=>'<label><input type="checkbox" id="c'+i+'"> <span>'+p+'</span></label>').join("")+'</div><div class="c warn"><h2>⚠️ Jebakan umum</h2><ul><li>Skor A di slide P3 tertulis 4,10, hitungan benar <b>4,05</b>.</li><li>Kohesi = <u>dalam</u> modul, coupling = <u>antar</u> modul.</li><li>Iteratif = memperbaiki; incremental = menambah cakupan.</li><li>Information hiding ≠ enkapsulasi (yang pertama soal keputusan yang berubah).</li><li>Gagal bisnis ≠ crash: hasil sah tanpa perubahan parsial.</li><li>Notifikasi gagal setelah commit: <b>jangan</b> rollback persetujuan.</li><li>Banyak modul tidak otomatis rancangan baik; tidak ada rancangan unggul untuk semua konteks.</li></ul></div>'}],
+["📚 Ringkasan",()=>{v.innerHTML=S.map((s,i)=>'<details'+(i?'':' open')+'><summary>'+s[0]+'</summary><ul>'+s[1].map(x=>'<li>'+x+'</li>').join("")+'</ul></details>').join("")}],
+["✅ Kuis",quiz],["✍️ Esai",()=>{v.innerHTML='<p class="mu">Jawab dulu di kertas, lalu buka kunci jawaban.</p>'+E.map((e,i)=>'<details><summary>'+(i+1)+'. '+e[0]+'</summary><div class="ex">'+e[1]+'</div></details>').join("")}]];
+let sc=0,an=0;
+function quiz(){sc=an=0;v.innerHTML=Q.map((q,i)=>'<div class="c" id="q'+i+'"><b>'+(i+1)+'. '+q[0]+'</b>'+q[1].map((o,j)=>'<button class="o" data-i="'+i+'" data-j="'+j+'">'+"ABCD"[j]+'. '+o+'</button>').join("")+'<div class="ex" hidden></div></div>').join("")+'<div class="sc"><span id="s">Skor: 0/0 (dari '+Q.length+')</span><button class="p" id="rs">Ulangi</button></div>';
+document.getElementById("rs").onclick=quiz;
+v.querySelectorAll(".o").forEach(b=>b.onclick=()=>{const i=+b.dataset.i,j=+b.dataset.j,c=document.getElementById("q"+i);if(c.dataset.d)return;c.dataset.d=1;an++;const q=Q[i];if(j==q[2])sc++;c.querySelectorAll(".o").forEach((o,k)=>{if(k==q[2])o.classList.add("ok");else if(k==j)o.classList.add("no")});const e=c.querySelector(".ex");e.hidden=false;e.innerHTML=(j==q[2]?"✅ Benar. ":"❌ Salah. ")+q[3];document.getElementById("s").textContent="Skor: "+sc+"/"+an+" (dari "+Q.length+")"})}
+T.forEach((t,i)=>{const b=document.createElement("button");b.textContent=t[0];b.onclick=()=>{nav.querySelectorAll("button").forEach(x=>x.classList.remove("on"));b.classList.add("on");t[1]();scrollTo(0,0)};nav.appendChild(b);if(!i)b.click()});
+let rem=5400,iv=null;const tm=document.getElementById("tm"),tb=document.getElementById("tb");
+function ft(){tm.textContent=String(Math.floor(rem/60)).padStart(2,"0")+":"+String(rem%60).padStart(2,"0")}
+tb.onclick=()=>{if(iv){clearInterval(iv);iv=null;tb.textContent="Lanjut"}else{tb.textContent="Jeda";iv=setInterval(()=>{if(--rem<=0){clearInterval(iv);rem=0}ft()},1000)}};
+</script></body></html>
